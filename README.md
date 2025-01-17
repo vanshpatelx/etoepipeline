@@ -3,6 +3,8 @@ https://chatgpt.com/share/678a93a6-dc58-8003-801f-079d7d221c41
 
 https://chatgpt.com/share/678a939c-2aa0-8001-b571-4b81e5fc7a80
 
+https://chatgpt.com/c/678a3fda-1f98-8001-9096-37c296edc7b2
+
 # Turborepo starter
 
 This is an official starter Turborepo.
