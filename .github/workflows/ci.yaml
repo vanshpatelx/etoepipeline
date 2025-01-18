@@ -75,12 +75,20 @@ jobs:
       
       - name: Test Docker Images with Docker Compose
         run: |
-          docker-compose up --build
+          docker-compose up --build &  # Run in background
+          echo $! > compose_dev.pid  # Save the PID to a file
 
       - name: Run Tests in /packages/test for docker compose
         run: |
           cd packages/test
           npm run test
+
+      - name: Stop Docker compose
+        run: |
+          if [ -f compose_dev.pid ]; then
+            kill $(cat compose_dev.pid) || echo "Process already stopped"
+            rm compose_dev.pid
+          fi
       
       - name: Push Docker Images to Docker Hub
         run: |
