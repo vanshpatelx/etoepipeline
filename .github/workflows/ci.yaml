@@ -39,15 +39,19 @@ jobs:
           chmod +x resource.sh
           ./resource.sh
       
-      - name: Build turbo
+      - name: Start Turbo Dev
         run: |
-          turbo build
-          turbo dev
+          turbo dev &  # Run in background
+          TURBO_PID=$! # Capture its PID
 
       - name: Run Tests in /packages/test
         run: |
           cd packages/test
           npm run test
+
+      - name: Stop Turbo Dev
+        run: |
+          kill $TURBO_PID  # Stop turbo dev
 
       - name: Build Docker Images
         run: |
