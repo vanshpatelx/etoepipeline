@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   service1:
-    image: probo-service1-image
+    image: "${DOCKER_USERNAME}/probo-service1-image:latest"
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -20,7 +20,7 @@ services:
         condition: service_healthy
 
   service2:
-    image: probo-service2-image
+    image: "${DOCKER_USERNAME}/probo-service2-image:latest"
     environment:
       DB_HOST: db
       DB_PORT: 5432
