@@ -41,6 +41,7 @@ jobs:
       
       - name: Start Turbo Dev
         run: |
+          turbo build
           turbo dev &  # Run in background
           TURBO_PID=$! # Capture its PID
 
