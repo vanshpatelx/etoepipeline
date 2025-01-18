@@ -78,6 +78,13 @@ jobs:
           docker-compose up --build &  # Run in background
           echo $! > compose_dev.pid  # Save the PID to a file
 
+      - name: Wait for Backend to be Ready
+        run: |
+          until curl -sSf $BACKEND_URL1/health && curl -sSf $BACKEND_URL2/health; do
+            echo "Waiting for backend..."
+            sleep 5
+          done
+
       - name: Run Tests in /packages/test for docker compose
         run: |
           cd packages/test
