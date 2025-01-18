@@ -57,6 +57,12 @@ jobs:
             rm turbo_dev.pid
           fi
 
+      - name: Cleanup Resources
+        run: |
+          cd scripts/
+          chmod +x cleanup.sh
+          ./cleanup.sh
+
       - name: Build Docker Images
         run: |
           docker build -f docker/service1/Dockerfile -t probo-service1-image .
