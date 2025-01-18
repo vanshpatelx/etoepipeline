@@ -43,7 +43,7 @@ jobs:
         run: |
           turbo build
           turbo dev &  # Run in background
-          TURBO_PID=$! # Capture its PID
+          echo $! > turbo_dev.pid  # Save the PID to a file
 
       - name: Run Tests in /packages/test
         run: |
@@ -52,7 +52,11 @@ jobs:
 
       - name: Stop Turbo Dev
         run: |
-          kill $TURBO_PID  # Stop turbo dev
+          if [ -f turbo_dev.pid ]; then
+            kill $(cat turbo_dev.pid) || echo "Process already stopped"
+            rm turbo_dev.pid
+          fi
+
 
       - name: Build Docker Images
         run: |
