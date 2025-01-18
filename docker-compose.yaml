@@ -1,6 +1,6 @@
 services:
   service1:
-    image: service1-image
+    image: probo-service1-image
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -16,7 +16,7 @@ services:
       - redis
 
   service2:
-    image: service2-image
+    image: probo-service2-image
     environment:
       DB_HOST: db
       DB_PORT: 5432

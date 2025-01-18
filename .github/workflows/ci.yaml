@@ -57,8 +57,23 @@ jobs:
             rm turbo_dev.pid
           fi
 
-
       - name: Build Docker Images
         run: |
-          docker build -f docker/service1/Dockerfile -t service1-image .
-          docker build -f docker/service2/Dockerfile -t service2-image .
+          docker build -f docker/service1/Dockerfile -t probo-service1-image .
+          docker build -f docker/service2/Dockerfile -t probo-service2-image .
+      
+      - name: Test Docker Images with Docker Compose
+        run: |
+          docker-compose up --build
+
+      - name: Run Tests in /packages/test for docker compose
+        run: |
+          cd packages/test
+          npm run test
+      
+      - name: Push Docker Images to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push probo-service1-image
+          docker push probo-service2-image
+      
