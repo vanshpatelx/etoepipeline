@@ -90,3 +90,29 @@ Learn more about the power of Turborepo:
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
 # etoepipeline
+
+
+
+
+docker build -f docker/service2/Dockerfile -t service2-image .
+
+
+
+      - name: Test Docker Images with Docker Compose
+        run: |
+          docker-compose up --build
+          # Run any additional tests inside Docker containers
+
+      - name: Run Tests Again
+        run: |
+          # Optional: Run tests inside the running Docker containers again
+
+      - name: Push Docker Images to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push my-node-service
+          docker push my-go-service
+
+      - name: Notify Results
+        run: |
+          # Optional step to notify success or failure (Slack, Email)

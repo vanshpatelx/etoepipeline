@@ -1,0 +1,55 @@
+name: CI for Monorepo
+
+on:
+  push:
+    branches:
+      - main
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Set up GoLang Environment
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.23'
+
+      - name: Install Node.js Dependencies
+        run: |
+          npm install -g turbo
+          npm install
+
+      - name: Install GoLang Dependencies
+        run: |
+          cd backend/service2
+          go mod tidy
+
+      - name: Configure Resources in Docker
+        run: |
+          cd scripts/
+          chmod +x resource.sh
+          ./resource.sh
+      
+      - name: Build turbo
+        run: |
+          turbo build
+          turbo dev
+
+      - name: Run Tests in /packages/test
+        run: |
+          cd packages/test
+          npm run test
+
+      - name: Build Docker Images
+        run: |
+          docker build -f docker/service1/Dockerfile -t service1-image .
+          docker build -f docker/service2/Dockerfile -t service2-image .

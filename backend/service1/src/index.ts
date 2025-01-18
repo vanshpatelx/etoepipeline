@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { createClient } from "redis";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import express from "express";
 
-dotenv.config();
+config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,28 +29,11 @@ const initializeDatabase = async () => {
   try {
     await dbClient.connect();
     await redisClient.connect();
-    
-    // Create users table if it does not exist
-    await dbClient.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL
-      );
-    `);
-
     console.log("Database and Redis initialized successfully.");
-    startServer();
   } catch (error) {
     console.error("Error initializing database or Redis:", error);
     process.exit(1);
   }
-};
-
-const startServer = () => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
 };
 
 // Add User to Both DB and Redis
@@ -64,7 +47,6 @@ app.post("/users", async (req, res) => {
     const user = result.rows[0];
     
     await redisClient.set(`user:${user.id}`, JSON.stringify(user));
-    
     res.status(200).json({ success: true, message: "User added successfully." });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error adding user.", error });
@@ -72,7 +54,7 @@ app.post("/users", async (req, res) => {
 });
 
 app.get("/health", async (req, res) => {
-    res.status(200).json({ success: true, message: "server is running." });
+  res.status(200).json({ success: true, message: "server is running." });
 });
 
 // Retrieve User from Both DB and Redis
@@ -86,16 +68,26 @@ app.get("/users/:id", async (req, res) => {
       const result = await dbClient.query(query, [id]);
       const user = result.rows[0];
       if (!user) {
-        return res.status(404).json({ success: false, message: "User not found." });
+        res.status(404).json({ success: false, message: "User not found." });
+        return
       }
       await redisClient.set(`user:${id}`, JSON.stringify(user));
-      return res.status(200).json({ success: true, user });
+      res.status(200).json({ success: true, user });
+      return
     }
-    return res.status(200).json({ success: true, user: JSON.parse(redisData) });
+    res.status(200).json({ success: true, user: JSON.parse(redisData)});
   } catch (error) {
     res.status(500).json({ success: false, message: "Error retrieving user.", error });
   }
 });
 
 // Initialize DB and start server
-initializeDatabase();
+if (require.main === module) {
+  initializeDatabase().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  });
+}
+
+export default app;

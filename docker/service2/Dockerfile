@@ -24,10 +24,10 @@ ENV DB_HOST=db
 ENV DB_PORT=5432
 ENV DB_USER=user
 ENV DB_PASSWORD=password
-ENV DB_NAME=testdb
+ENV DB_NAME=mydatabase
 ENV REDIS_HOST=redis
 ENV REDIS_PORT=6379
 
-EXPOSE 3001
+EXPOSE 8080
 
 CMD ["/app/backend/service2/bin/main"]
