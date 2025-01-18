@@ -1,15 +1,6 @@
 #!/bin/bash
 
-# Set environment variables (Modify as needed)
-POSTGRES_CONTAINER="postgres_container"
-REDIS_CONTAINER="redis_container"
-POSTGRES_IMAGE="postgres:latest"
-REDIS_IMAGE="redis:latest"
-POSTGRES_USER="admin"
-POSTGRES_PASSWORD="password"
-POSTGRES_DB="mydatabase"
-POSTGRES_PORT="5432"
-REDIS_PORT="6379"
+source ./../variables.txt
 
 # Check if PostgreSQL container is already running
 if [ "$(docker ps -q -f name=$POSTGRES_CONTAINER)" ]; then
@@ -40,38 +31,6 @@ fi
 
 echo "PostgreSQL and Redis are running."
 
-
-
-#!/bin/bash
-
-# Define the .env content for Service 1
-ENV_CONTENT1='DB_HOST="localhost"
-DB_PORT="5432"
-DB_USER="admin"
-DB_PASSWORD="password"
-DB_NAME="mydatabase"
-
-REDIS_HOST="localhost"
-REDIS_PORT="6379"
-
-PORT="3000"'
-
-# Define the .env content for Service 2
-ENV_CONTENT2='DB_HOST="localhost"
-DB_PORT="5432"
-DB_USER="admin"
-DB_PASSWORD="password"
-DB_NAME="mydatabase"
-
-REDIS_HOST="localhost"
-REDIS_PORT="6379"
-
-PORT="8080"'
-
-# Define the target locations (relative to the project root)
-TARGET1="backend/service1/.env"
-TARGET2="backend/service2/.env"
-
 # Function to create .env file in a location
 create_env_file() {
     local target_path=$1
@@ -85,7 +44,7 @@ create_env_file() {
     mkdir -p "$(dirname "$FULL_PATH")"
 
     # Write the .env content
-    echo "$content" > "$FULL_PATH"
+    echo -e "$content" > "$FULL_PATH"
 
     # Confirm success and print the full path
     if [ -f "$FULL_PATH" ]; then
@@ -95,6 +54,14 @@ create_env_file() {
         exit 1
     fi
 }
+
+# Define the .env content for Service 1 and Service 2 using variables from variables.txt
+ENV_CONTENT1="DB_HOST=\"$SERVICE1_DB_HOST\"\nDB_PORT=\"$SERVICE1_DB_PORT\"\nDB_USER=\"$SERVICE1_DB_USER\"\nDB_PASSWORD=\"$SERVICE1_DB_PASSWORD\"\nDB_NAME=\"$SERVICE1_DB_NAME\"\nREDIS_HOST=\"$SERVICE1_REDIS_HOST\"\nREDIS_PORT=\"$SERVICE1_REDIS_PORT\"\nPORT=\"$SERVICE1_PORT\""
+ENV_CONTENT2="DB_HOST=\"$SERVICE2_DB_HOST\"\nDB_PORT=\"$SERVICE2_DB_PORT\"\nDB_USER=\"$SERVICE2_DB_USER\"\nDB_PASSWORD=\"$SERVICE2_DB_PASSWORD\"\nDB_NAME=\"$SERVICE2_DB_NAME\"\nREDIS_HOST=\"$SERVICE2_REDIS_HOST\"\nREDIS_PORT=\"$SERVICE2_REDIS_PORT\"\nPORT=\"$SERVICE2_PORT\""
+
+# Define the target locations (relative to the project root)
+TARGET1="backend/service1/.env"
+TARGET2="backend/service2/.env"
 
 # Create .env files at both locations with their respective content
 create_env_file "$TARGET1" "$ENV_CONTENT1"
