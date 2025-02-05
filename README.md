@@ -1,4 +1,4 @@
-# 🚀 CI/CD Pipeline for Monorepo  
+# 🚀 CI Pipeline for Monorepo  
 
 ## 📜 Overview  
 
