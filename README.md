@@ -15,7 +15,7 @@
 
 ## 📊 Architecture Diagram  
 
-![CI/CD Pipeline Diagram]()  
+![CI/CD Pipeline Diagram](https://github.com/vanshpatelx/etoepipeline/blob/main/image/flow.png)  
 
 
 ## 🛠️ GitHub Actions Workflow  
